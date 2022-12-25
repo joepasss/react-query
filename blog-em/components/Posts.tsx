@@ -9,21 +9,27 @@ export interface PostInterface {
   body: string;
 }
 
-const fetchPosts = async (): Promise<PostInterface[]> => {
+const fetchPosts = async (page: number): Promise<PostInterface[]> => {
   const response = await fetch(
-    "https://jsonplaceholder.typicode.com/posts?_limit=10&_page=0"
+    `https://jsonplaceholder.typicode.com/posts?_limit=10&_page=${page}`
   );
 
   return response.json();
 };
 
 const Posts = () => {
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const maxPostPage = 10;
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedPost, setSelectedPost] = useState<PostInterface | null>(null);
 
-  const { data, isError, isLoading, error } = useQuery(["posts"], fetchPosts, {
-    staleTime: 2000,
-  });
+  const { data, isError, isLoading, error } = useQuery(
+    ["posts", currentPage],
+    () => fetchPosts(currentPage),
+    {
+      staleTime: 2000,
+    }
+  );
 
   if (isLoading) return <h3>Loading...</h3>;
 
@@ -51,13 +57,23 @@ const Posts = () => {
       </ul>
 
       <div className="pages">
-        <button disabled onClick={() => {}}>
+        <button
+          disabled={currentPage <= 1}
+          onClick={() => {
+            setCurrentPage((prev) => prev - 1);
+          }}
+        >
           Previous Page
         </button>
 
-        <span>Page {currentPage + 1}</span>
+        <span>Page {currentPage}</span>
 
-        <button disabled onClick={() => {}}>
+        <button
+          disabled={currentPage >= maxPostPage}
+          onClick={() => {
+            setCurrentPage((prev) => prev + 1);
+          }}
+        >
           Next page
         </button>
       </div>
