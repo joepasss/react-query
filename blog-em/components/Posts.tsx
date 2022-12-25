@@ -1,47 +1,43 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Fragment, useState } from "react";
+import PostDetail from "./PostDetail";
 
-import { PostDetail } from "./PostDetail";
-const maxPostPage = 10;
+export interface PostInterface {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-async function fetchPosts() {
+const fetchPosts = async (): Promise<PostInterface[]> => {
   const response = await fetch(
     "https://jsonplaceholder.typicode.com/posts?_limit=10&_page=0"
   );
+
   return response.json();
-}
+};
 
-export function Posts() {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [selectedPost, setSelectedPost] = useState(null);
+const Posts = () => {
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [selectedPost, setSelectedPost] = useState<PostInterface | null>(null);
 
-  // replace with useQuery
   const { data, isError, isLoading, error } = useQuery(["posts"], fetchPosts, {
     staleTime: 2000,
   });
 
-  if (isLoading) return <h3>Loading ...</h3>;
+  if (isLoading) return <h3>Loading...</h3>;
 
-  if (isError)
+  if (isError) {
     return (
-      <>
+      <Fragment>
         <h3>Oops, something went wrong!</h3>
-        <p>{error.toString()}</p>
-      </>
+        {typeof error === "string" ? <p>{error.toString()}</p> : <Fragment />}
+      </Fragment>
     );
-
-  // Data refetch only triggers for stale data
-  // component remounts & window refocus etc..
-  // staleTime = How to tolerate data potentially begin out of date?
-
-  // if data fresh data cannot refetch
-
-  // cacheTime for data that might be re-used late
-  // After the cache expires, the data is garbage collected
-  // Cache is backup data to display while fetching
+  }
 
   return (
-    <>
+    <Fragment>
       <ul>
         {data.map((post) => (
           <li
@@ -53,17 +49,22 @@ export function Posts() {
           </li>
         ))}
       </ul>
+
       <div className="pages">
         <button disabled onClick={() => {}}>
-          Previous page
+          Previous Page
         </button>
+
         <span>Page {currentPage + 1}</span>
+
         <button disabled onClick={() => {}}>
           Next page
         </button>
       </div>
       <hr />
       {selectedPost && <PostDetail post={selectedPost} />}
-    </>
+    </Fragment>
   );
-}
+};
+
+export default Posts;
