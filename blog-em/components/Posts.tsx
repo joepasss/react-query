@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { Fragment, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Fragment, useEffect, useState } from "react";
 import PostDetail from "./PostDetail";
 
 export interface PostInterface {
@@ -23,11 +23,24 @@ const Posts = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedPost, setSelectedPost] = useState<PostInterface | null>(null);
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (currentPage < maxPostPage) {
+      const nextPage = currentPage + 1;
+
+      queryClient.prefetchQuery(["posts", nextPage], () =>
+        fetchPosts(nextPage)
+      );
+    }
+  }, [currentPage, queryClient]);
+
   const { data, isError, isLoading, error } = useQuery(
     ["posts", currentPage],
     () => fetchPosts(currentPage),
     {
       staleTime: 2000,
+      keepPreviousData: true,
     }
   );
 
