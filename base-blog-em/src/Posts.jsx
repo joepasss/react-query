@@ -16,7 +16,9 @@ export function Posts() {
   const [selectedPost, setSelectedPost] = useState(null);
 
   // replace with useQuery
-  const { data, isError, isLoading, error } = useQuery(["posts"], fetchPosts);
+  const { data, isError, isLoading, error } = useQuery(["posts"], fetchPosts, {
+    staleTime: 2000,
+  });
 
   if (isLoading) return <h3>Loading ...</h3>;
 
@@ -27,6 +29,16 @@ export function Posts() {
         <p>{error.toString()}</p>
       </>
     );
+
+  // Data refetch only triggers for stale data
+  // component remounts & window refocus etc..
+  // staleTime = How to tolerate data potentially begin out of date?
+
+  // if data fresh data cannot refetch
+
+  // cacheTime for data that might be re-used late
+  // After the cache expires, the data is garbage collected
+  // Cache is backup data to display while fetching
 
   return (
     <>
