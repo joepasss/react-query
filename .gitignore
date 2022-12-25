@@ -158,4 +158,4 @@ dist
 .pnp.*
 
 # reference
-udemy-REACT-QUERY/
+reference/**
