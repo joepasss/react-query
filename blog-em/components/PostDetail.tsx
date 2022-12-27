@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FC, Fragment } from "react";
 import { PostInterface } from "./Posts";
 
@@ -48,6 +48,11 @@ const PostDetail: FC<Props> = ({ post }) => {
     () => fetchComments(post.id)
   );
 
+  const deleteMutation = useMutation((postId: number) => deletePost(postId));
+  const updateMutation = useMutation((postId: number) =>
+    updatePost(postId, "title")
+  );
+
   if (isLoading) return <h3>Loading...</h3>;
 
   if (isError) {
@@ -62,8 +67,33 @@ const PostDetail: FC<Props> = ({ post }) => {
   return (
     <Fragment>
       <h3>{post.title}</h3>
-      <button>Delete</button>
-      <button>Update title</button>
+      <button onClick={() => deleteMutation.mutate(post.id)}>Delete</button>
+      <button onClick={() => updateMutation.mutate(post.id)}>
+        Update title
+      </button>
+      {deleteMutation.isError && (
+        <p style={{ color: "red" }}>Error deleting the post</p>
+      )}
+
+      {deleteMutation.isLoading && (
+        <p style={{ color: "purple" }}>Deleting the post</p>
+      )}
+
+      {deleteMutation.isSuccess && (
+        <p style={{ color: "green" }}>Post has been deleted!</p>
+      )}
+
+      {updateMutation.isError && (
+        <p style={{ color: "red" }}>Error update the post</p>
+      )}
+
+      {updateMutation.isLoading && (
+        <p style={{ color: "purple" }}>Updating the post</p>
+      )}
+
+      {updateMutation.isSuccess && (
+        <p style={{ color: "green" }}>Post has been updated!</p>
+      )}
 
       <p>{post.body}</p>
 
