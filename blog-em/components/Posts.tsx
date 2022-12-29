@@ -18,7 +18,8 @@ const fetchPosts = async (page: number): Promise<PostInterface[]> => {
 };
 
 const Posts = () => {
-  const maxPostPage = 10;
+  const maxPage = 10;
+
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedPost, setSelectedPost] = useState<PostInterface | null>(null);
@@ -26,7 +27,7 @@ const Posts = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (currentPage < maxPostPage) {
+    if (currentPage < maxPage) {
       const nextPage = currentPage + 1;
 
       queryClient.prefetchQuery(["posts", nextPage], () =>
@@ -72,9 +73,7 @@ const Posts = () => {
       <div className="pages">
         <button
           disabled={currentPage <= 1}
-          onClick={() => {
-            setCurrentPage((prev) => prev - 1);
-          }}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous Page
         </button>
@@ -82,10 +81,8 @@ const Posts = () => {
         <span>Page {currentPage}</span>
 
         <button
-          disabled={currentPage >= maxPostPage}
-          onClick={() => {
-            setCurrentPage((prev) => prev + 1);
-          }}
+          disabled={currentPage > maxPage - 1}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next page
         </button>

@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { FC, Fragment } from "react";
+import { updateParameter } from "typescript";
 import { PostInterface } from "./Posts";
 
 export interface CommentInterface {
@@ -25,11 +26,15 @@ const deletePost = async (postId: number) => {
     `https://jsonplaceholder.typicode.com/postId/${postId}`,
     { method: "DELETE" }
   );
-
   return response.json();
 };
 
-const updatePost = async (postId: number, title: string) => {
+interface UpdatePostVariables {
+  postId: number;
+  title: string;
+}
+
+const updatePost = async ({ postId, title }: UpdatePostVariables) => {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/postId/${postId}`,
     {
@@ -38,7 +43,6 @@ const updatePost = async (postId: number, title: string) => {
       headers: { "Content-type": "application/json; charset=UTF-8" },
     }
   );
-
   return response.json();
 };
 
@@ -49,11 +53,11 @@ const PostDetail: FC<Props> = ({ post }) => {
   );
 
   const deleteMutation = useMutation((postId: number) => deletePost(postId));
-  const updateMutation = useMutation((postId: number) =>
-    updatePost(postId, "title")
+  const updateMutation = useMutation(({ postId, title }: UpdatePostVariables) =>
+    updatePost({ postId, title })
   );
 
-  if (isLoading) return <h3>Loading...</h3>;
+  if (isLoading) return <h3>Loading ...</h3>;
 
   if (isError) {
     return (
@@ -68,9 +72,12 @@ const PostDetail: FC<Props> = ({ post }) => {
     <Fragment>
       <h3>{post.title}</h3>
       <button onClick={() => deleteMutation.mutate(post.id)}>Delete</button>
-      <button onClick={() => updateMutation.mutate(post.id)}>
+      <button
+        onClick={() => updateMutation.mutate({ postId: post.id, title: "ASD" })}
+      >
         Update title
       </button>
+
       {deleteMutation.isError && (
         <p style={{ color: "red" }}>Error deleting the post</p>
       )}
