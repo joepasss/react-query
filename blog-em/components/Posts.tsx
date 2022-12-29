@@ -20,6 +20,7 @@ const fetchPosts = async (page: number): Promise<PostInterface[]> => {
 const Posts = () => {
   const maxPage = 10;
 
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedPost, setSelectedPost] = useState<PostInterface | null>(null);
 
