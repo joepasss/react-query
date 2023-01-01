@@ -1,3 +1,4 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { FC } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
@@ -8,8 +9,16 @@ const fetchUrl = async (url: string) => {
 };
 
 const InfinitePeople: FC = () => {
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    ["sw-people"],
+    ({ pageParam = initialUrl }) => fetchUrl(pageParam),
+    {
+      getNextPageParam: (lastPage) => lastPage.next || undefined,
+    }
+  );
+
   // TODO: get data for InfiniteScroll via React Query
-  return <InfiniteScroll loadMore={() => {}}/>;
+  return <InfiniteScroll loadMore={() => {}} />;
 };
 
 export default InfinitePeople;
