@@ -14,7 +14,6 @@ const App: FC = () => {
         <InfinitePeople />
         <InfiniteSpecies />
       </div>
-
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
