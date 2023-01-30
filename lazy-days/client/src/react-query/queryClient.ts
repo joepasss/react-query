@@ -15,6 +15,7 @@ function queryErrorHandler(error: unknown): void {
   toast({ title, status: 'error', variant: 'subtle', isClosable: true });
 }
 
+// to satisfy typescript until this file has uncommented contents
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

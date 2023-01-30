@@ -23,7 +23,7 @@ export function useStaff(): UseStaff {
   const [filter, setFilter] = useState('all');
 
   // TODO: get data from server via useQuery
-  const fallback: Staff[] = [];
+  const fallback = [];
   const { data = fallback } = useQuery(queryKeys.staff, getStaff);
 
   return { staff: data, filter, setFilter };
