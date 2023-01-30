@@ -1,6 +1,6 @@
 export const queryKeys = {
   treatments: ['treatments'],
-  appointments: ['appointments'],
+  appointments: 'appointments',
   user: ['user'],
   staff: ['staff'],
 };
